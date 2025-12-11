@@ -21,10 +21,6 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
     print(f"Downloading {duration}s of {detector} data starting at GPS {gps_start}...")
     
     # Download data directly from GWOSC
-    conn = io_nds2.auth_connect('nds.gwosc.org', 31200)
-    all_channels = conn.find_channels(f'{detector}:*')
-    for channel in all_channels:
-        channel_name = str(channel.name)
     data = TimeSeries.fetch_open_data(
         detector, 
         gps_start, 
@@ -52,13 +48,14 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
         # Filter for common witness channel types (auxiliary channels)
         witness_patterns = [
             # 'PEM',      # Physical environment monitoring
-            'PSL'      # Pre-stabilized laser
+            'PSL',      # Pre-stabilized laser
             # 'SUS',      # Suspension
             # 'ASC',      # Angular sensing and control
             # 'LSC',      # Length sensing and control
             # 'ALS',      # Auxiliary length sensing
             # 'OMC',      # Output mode cleaner
             # 'IMC',      # Input mode cleaner
+            "MAINS"
         ]
         
         witness_channel_names = []
@@ -157,25 +154,19 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
 
 def main():
     print("Downloading LIGO Training Data")
-    '''download_and_save_data(
-        gps_start=1186736512,
+    download_and_save_data(
+        gps_start=1186736512  ,
         duration=1024,
-        output_file="../data/train_data.npz"
+        output_file="../data/train_data_raw.npz"
     )
     
     print("Downloading LIGO Test Data")
     download_and_save_data(
-        gps_start=1186740564,
+        gps_start=1186740564  ,
         duration=1024,
-        output_file="../data/test_data.npz"
-    )'''
-
-    print("Downloading LIGO Paper Data")
-    download_and_save_data(
-        gps_start=1182410770,
-        duration=1024,
-        output_file="../data/paper_data.npz"
+        output_file="../data/test_data_raw.npz"
     )
+
     
     print("All data downloaded successfully")
 
