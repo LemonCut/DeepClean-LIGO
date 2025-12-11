@@ -5,7 +5,8 @@ from src.loss import DeepCleanLoss
 from src.dataset import GWDataset
 
 def train(strain_train, witness_train, strain_val, witness_val, sample_rate, band_min, band_max, alpha=0.5, 
-          overlap=7.75, val_overlap=4.0, batch_size=32, epochs=50, save_path='best_model.pth', patience=5):
+          overlap=7.75, val_overlap=4.0, batch_size=32, epochs=50, save_path='best_model.pth', patience=5,
+          linear=True):
     """
     Train the model
     
@@ -28,13 +29,15 @@ def train(strain_train, witness_train, strain_val, witness_val, sample_rate, ban
     train_dataset = GWDataset(
         strain_train, witness_train, sample_rate,
         overlap=overlap,
-        band_start=band_min, band_end=band_max
+        band_start=band_min, band_end=band_max,
+        linear=linear
     )
     
     val_dataset = GWDataset(
         strain_val, witness_val, sample_rate,
         overlap=val_overlap,
-        band_start=band_min, band_end=band_max
+        band_start=band_min, band_end=band_max,
+        linear=linear
     )
     
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)

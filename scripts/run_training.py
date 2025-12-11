@@ -6,12 +6,14 @@ sys.path.append('..')
 from src.train import train
 
 # Configuration matching O2/O3 requirements
+# this is config for O2. O3 use 1024, 55, 65, 0.1, False
 DATA_PATH = '../data/train_data.npz'
 MODEL_SAVE_PATH = '../models/best_model.pth'
-SAMPLE_RATE = 1024
-BAND_MIN = 55.0      # Target 60Hz mains
-BAND_MAX = 65.0
-ALPHA = 0.5          # Balanced loss
+SAMPLE_RATE = 2048
+BAND_MIN = 80
+BAND_MAX = 1000
+ALPHA = 0.8
+LINEAR = True
 
 def main():
     data = np.load(DATA_PATH)
@@ -33,7 +35,8 @@ def main():
         band_max=BAND_MAX,
         alpha=ALPHA,
         epochs=30,
-        save_path=MODEL_SAVE_PATH
+        save_path=MODEL_SAVE_PATH,
+        linear=LINEAR
     )
     
     print(f"Model saved to {MODEL_SAVE_PATH}")
