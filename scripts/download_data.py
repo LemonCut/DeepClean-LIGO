@@ -46,28 +46,30 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
         all_channels = conn.find_channels(f'{detector}:*')
         
         # Filter for common witness channel types (auxiliary channels)
-        witness_patterns = [
-            'PEM',      # Physical environment monitoring
-            'PSL',      # Pre-stabilized laser
-            'SUS',      # Suspension
-            'ASC',      # Angular sensing and control
-            'LSC',      # Length sensing and control
-            'ALS',      # Auxiliary length sensing
-            'OMC',      # Output mode cleaner
-            'IMC',      # Input mode cleaner
-        ]
+        # witness_patterns = [
+        #     'PEM',      # Physical environment monitoring
+        #     'PSL',      # Pre-stabilized laser
+        #     'SUS',      # Suspension
+        #     'ASC',      # Angular sensing and control
+        #     'LSC',      # Length sensing and control
+        #     'ALS',      # Auxiliary length sensing
+        #     'OMC',      # Output mode cleaner
+        #     'IMC',      # Input mode cleaner
+        # ]
         
         witness_channel_names = []
         for channel in all_channels:
             channel_name = str(channel.name)
             # Exclude the main strain channel
             if 'STRAIN' not in channel_name and 'CALIB' not in channel_name:
-                # Check if it matches any witness pattern
-                if any(pattern in channel_name for pattern in witness_patterns):
-                    # Prefer channels with reasonable sample rates
-                    if channel.sample_rate <= sample_rate and channel.sample_rate > 0:
-                        witness_channel_names.append(channel_name)
+                witness_channel_names.append(channel_name)
+            #     # Check if it matches any witness pattern
+            #     if any(pattern in channel_name for pattern in witness_patterns):
+            #         # Prefer channels with reasonable sample rates
+            #         if channel.sample_rate <= sample_rate and channel.sample_rate > 0:
+            #             witness_channel_names.append(channel_name)
         
+        print(f"Channel names: {witness_channel_names}")
         print(f"  Found {len(witness_channel_names)} potential witness channels")
         
         # Limit to a reasonable number to avoid too much data
