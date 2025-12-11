@@ -21,6 +21,10 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
     print(f"Downloading {duration}s of {detector} data starting at GPS {gps_start}...")
     
     # Download data directly from GWOSC
+    conn = io_nds2.auth_connect('nds.gwosc.org', 31200)
+    all_channels = conn.find_channels(f'{detector}:*')
+    for channel in all_channels:
+        channel_name = str(channel.name)
     data = TimeSeries.fetch_open_data(
         detector, 
         gps_start, 
@@ -144,7 +148,8 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
         gps_start=gps_start,
         duration=duration,
         detector=detector,
-        witness_channels=successful_channels
+        witness_channels=successful_channels,
+        ts_object=data
     )
     
     print(f"✓ Saved to {output_path}")
@@ -152,7 +157,7 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
 
 def main():
     print("Downloading LIGO Training Data")
-    download_and_save_data(
+    '''download_and_save_data(
         gps_start=1186736512,
         duration=1024,
         output_file="../data/train_data.npz"
@@ -163,6 +168,13 @@ def main():
         gps_start=1186740564,
         duration=1024,
         output_file="../data/test_data.npz"
+    )'''
+
+    print("Downloading LIGO Paper Data")
+    download_and_save_data(
+        gps_start=1182410770,
+        duration=1024,
+        output_file="../data/paper_data.npz"
     )
     
     print("All data downloaded successfully")
