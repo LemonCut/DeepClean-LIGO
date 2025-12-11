@@ -146,7 +146,6 @@ def download_and_save_data(gps_start, duration, output_file, detector='H1', samp
         duration=duration,
         detector=detector,
         witness_channels=successful_channels,
-        ts_object=data
     )
     
     print(f"✓ Saved to {output_path}")
