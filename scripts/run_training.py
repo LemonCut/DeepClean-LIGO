@@ -9,11 +9,11 @@ from src.train import train
 # this is config for O2. O3 use 1024, 55, 65, 0.1, False
 DATA_PATH = '../data/train_data.npz'
 MODEL_SAVE_PATH = '../models/best_model.pth'
-SAMPLE_RATE = 2048
-BAND_MIN = 80
-BAND_MAX = 1000
-ALPHA = 0.8
-LINEAR = True
+SAMPLE_RATE = 4096
+BAND_MIN = 60
+BAND_MAX = 62
+ALPHA = 0
+LINEAR = False
 
 def main():
     data = np.load(DATA_PATH)
@@ -34,7 +34,7 @@ def main():
         band_min=BAND_MIN, 
         band_max=BAND_MAX,
         alpha=ALPHA,
-        epochs=30,
+        epochs=50,
         save_path=MODEL_SAVE_PATH,
         linear=LINEAR
     )

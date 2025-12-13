@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class DeepCleanLoss(nn.Module):
     def __init__(self, sample_rate, fft_length=2, overlap=1, alpha=0.5, band_start=55.0, band_end=65.0):
         super(DeepCleanLoss, self).__init__()

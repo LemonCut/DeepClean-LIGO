@@ -8,17 +8,17 @@ def postprocess(prediction_tensor, strain_mean, strain_std, sample_rate, band_mi
     
     noise_physical = (pred_noise * strain_std) + strain_mean
     
-    sos = butter(8, [band_min, band_max], btype='bandpass', fs=sample_rate, output='sos')
+    '''sos = butter(8, [band_min, band_max], btype='bandpass', fs=sample_rate, output='sos')
 
     if noise_physical.ndim == 1:
         noise_clean = sosfilt(sos, noise_physical)
     else:
-        noise_clean = sosfilt(sos, noise_physical, axis=-1)
+        noise_clean = sosfilt(sos, noise_physical, axis=-1)'''
     
-    return noise_clean
+    return noise_physical
 def visualize_data(data):
     # Create a figure with multiple subplots
-    fig, axes = plt.subplots(2, 1, figsize=(14, 14))
+    fig, axes = plt.subplots(2, 1, figsize=(28, 14))
 
     # 3. Power Spectral Density (PSD)
     psd = data.psd(fftlength=2, overlap=1)
@@ -41,10 +41,11 @@ def visualize_data(data):
 
     plt.tight_layout()
     plt.show()
-def simulate_mains_hum(f_hum=60, harmonics=4, sample_rate=4096, duration=1024):
+def simulate_mains_hum(f_hum=60, harmonics=4, sample_rate=4096, duration=1024, seed=0):
     """
     Simulate realistic mains hum with slight frequency jitter and variable harmonic amplitudes.
     """
+    np.random.seed(seed)
     t = np.arange(0, duration, 1/sample_rate)
     signal = np.zeros_like(t)
     
@@ -61,16 +62,20 @@ def simulate_mains_hum(f_hum=60, harmonics=4, sample_rate=4096, duration=1024):
     
     return signal
 
-def sideband_nonlinear_coupling(signal, sample_rate=4096):
+def sideband_nonlinear_coupling(signal, sample_rate=4096, seed=0):
     """
     Introduce significant sidebands around each harmonic by low-frequency amplitude modulation.
     """
+    np.random.seed(seed)
+    random.seed(seed)
     t = np.arange(len(signal)) / sample_rate
     
     # Modulation signal: multiple low-frequency sinusoids to generate visible sidebands
     mod = 0.001 * np.sin(2*np.pi*(2/3)*t) + 0.001 * np.sin(2*np.pi*(1/3)*t)
-    for x in range(20):
-        mod += 0.001 * np.sin(2*np.pi*(2/3 + random.uniform(-0.1, 0.1) )*t) + 0.001 * np.sin(2*np.pi*(1/3 + random.uniform(-0.1, 0.1) )*t)
+    
+    for _ in range(20):
+        mod += 0.001 * np.sin(2*np.pi*(2/3 + random.uniform(-0.1, 0.1))*t)
+        mod += 0.001 * np.sin(2*np.pi*(1/3 + random.uniform(-0.1, 0.1))*t)
     
     # Amplitude modulation
     modulated_signal = signal * (1 + mod)

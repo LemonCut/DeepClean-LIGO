@@ -5,7 +5,7 @@ from scipy.signal import butter, sosfilt
 
 class GWDataset(Dataset):
     def __init__(self, strain, witnesses, sample_rate, segment_duration=8.0, overlap=7.75, band_start=55.0, band_end=65.0,
-                 linear=True):
+                 linear=False):
         """
         strain: array of wave data
         witnesses: matrix of witness channels (N_channels, Time)
@@ -14,8 +14,9 @@ class GWDataset(Dataset):
         self.seg_len = int(segment_duration * sample_rate) 
         self.step = int((segment_duration - overlap) * sample_rate) 
         
-        sos = butter(8, [band_start, band_end], btype='bandpass', fs=sample_rate, output='sos')
-        strain_filtered = sosfilt(sos, strain)
+        #sos = butter(8, [band_start, band_end], btype='bandpass', fs=sample_rate, output='sos')
+        #strain_filtered = sosfilt(sos, strain)
+        strain_filtered = strain
 
         if linear:
             witnesses_filtered = np.zeros_like(witnesses)

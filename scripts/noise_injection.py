@@ -5,21 +5,21 @@ sys.path.append('..')
 from src.utils import simulate_mains_hum, sideband_nonlinear_coupling
 
 
-def generatedSimulatedData(sourceDataPath, outputPath):
-
+def generatedSimulatedData(sourceDataPath, outputPath, simulatedNoiseStrength=1e-20, linearWitnessStrength=3e-22):
+    # Good strength defaults: simulated : 1e-20, witness: 3e-22
     data = np.load(sourceDataPath)
     strain_raw = data['strain']
     witnesses_raw = data['witnesses']
     mainsHumWitness = simulate_mains_hum()
     modulatedNoise = sideband_nonlinear_coupling(mainsHumWitness)
     
-    simulatedNoisedData = data['strain'] + modulatedNoise * 1e-20
+    simulatedNoisedData = data['strain'] + modulatedNoise * simulatedNoiseStrength
     
     for i, channel in enumerate(data['witnesses']):
         channel = np.array(channel)  
         # normalize to [-1, 1]
         normalizedWitnessChannel = 2 * (channel - channel.min()) / (channel.max() - channel.min()) - 1
-        simulatedNoisedData += normalizedWitnessChannel * 3e-22
+        simulatedNoisedData += normalizedWitnessChannel * linearWitnessStrength
         
             
     newWitnessData = np.concatenate([data['witnesses'], mainsHumWitness.reshape(1, -1)], axis=0)

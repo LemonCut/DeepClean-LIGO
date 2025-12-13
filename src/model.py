@@ -1,12 +1,15 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+from torch.nn.utils import weight_norm
+
 
 class DeepCleanAutoencoder(nn.Module):
     def __init__(self, num_witnesses):
         super(DeepCleanAutoencoder, self).__init__()
         
-        kernel_size = 7
-        padding = 3
+        kernel_size = 15
+        padding = 7
         
         self.in_conv = nn.Sequential(
             nn.Conv1d(num_witnesses, 8, kernel_size, stride=1, padding=padding),
@@ -59,3 +62,4 @@ class DeepCleanAutoencoder(nn.Module):
         
         noise_pred = self.out_conv(x)
         return noise_pred
+
